@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/syncnode/syncnode-client/issues"
   },
-  "homepage": "https://github.com/syncnode/syncnode-client#readme"
+  "homepage": "https://github.com/syncnode/syncnode-client#readme",
+  "dependencies": {
+    "syncnode-common": "github:syncnode/syncnode-common"
+  }
 }
