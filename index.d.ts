@@ -35,6 +35,7 @@ export declare type Partial<T> = {
 };
 export declare type CSSStyleDeclarationPartial = Partial<CSSStyleDeclaration>;
 export interface ElementSpec {
+    parent?: string;
     tag?: string;
     innerHTML?: string;
     className?: string;
@@ -52,7 +53,7 @@ export declare class SyncView<T extends SyncNode> extends SyncNodeEventEmitter {
     constructor(options?: any);
     hasDataChanged(newData: T): boolean;
     add<K extends keyof HTMLElementTagNameMap>(tag: K, spec?: ElementSpec): HTMLElementTagNameMap[K];
-    addView<R extends SyncView<SyncNode>>(view: R, className?: string, tag?: string): R;
+    addView<R extends SyncView<SyncNode>>(view: R, className?: string, parent?: string): R;
     addBinding(memberName: string, prop: string, value: string): void;
     style(s: CSSStyleDeclarationPartial): void;
     init(): void;

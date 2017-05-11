@@ -143,6 +143,7 @@ export type Partial<T> = {
 export type CSSStyleDeclarationPartial = Partial<CSSStyleDeclaration>; // To get code completion for style definitions below, make partial to specify only a subset
 
 export interface ElementSpec {
+	parent?: string;
 	tag?: string;
 	innerHTML?: string;
 	className?: string;
@@ -184,10 +185,16 @@ export class SyncView<T extends SyncNode> extends SyncNodeEventEmitter {
 				(el as any).addEventListener(key, (spec.events as any)[key]);
 			});
 		}
-		this.el.appendChild(el as any);
+		if(spec.parent) {
+			let parent = (this as any)[spec.parent];
+			if(parent.el) parent = parent.el;
+			parent.appendChild(el as any);
+		} else {
+			this.el.appendChild(el as any);
+		}
 		return el;
 	}
-	addView<R extends SyncView<SyncNode>>(view: R, className?: string, tag?: string): R {
+	addView<R extends SyncView<SyncNode>>(view: R, className?: string, parent?: string): R {
 		view.init();
 		if(className) view.el.className += ' ' + className;
 		this.el.appendChild(view.el);
@@ -226,6 +233,8 @@ export class SyncView<T extends SyncNode> extends SyncNodeEventEmitter {
 			Object.keys(props).forEach((prop) => {
 				var valuePath = props[prop];
 				var value = traverse(this, valuePath.split('.'));
+				if(id == 'addBtn')
+                	console.log('binding', id, prop, valuePath, value);
 				if (prop === 'update') {
 					(this as any)[id].update(value);
 				} else {

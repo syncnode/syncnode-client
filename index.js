@@ -179,10 +179,18 @@ var __extends = (this && this.__extends) || (function () {
                     el.addEventListener(key, spec.events[key]);
                 });
             }
-            this.el.appendChild(el);
+            if (spec.parent) {
+                var parent_1 = this[spec.parent];
+                if (parent_1.el)
+                    parent_1 = parent_1.el;
+                parent_1.appendChild(el);
+            }
+            else {
+                this.el.appendChild(el);
+            }
             return el;
         };
-        SyncView.prototype.addView = function (view, className, tag) {
+        SyncView.prototype.addView = function (view, className, parent) {
             view.init();
             if (className)
                 view.el.className += ' ' + className;
@@ -224,6 +232,8 @@ var __extends = (this && this.__extends) || (function () {
                 Object.keys(props).forEach(function (prop) {
                     var valuePath = props[prop];
                     var value = traverse(_this, valuePath.split('.'));
+                    if (id == 'addBtn')
+                        console.log('binding', id, prop, valuePath, value);
                     if (prop === 'update') {
                         _this[id].update(value);
                     }
