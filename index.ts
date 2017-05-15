@@ -194,10 +194,14 @@ export class SyncView<T extends SyncNode> extends SyncNodeEventEmitter {
 		}
 		return el;
 	}
-	addView<R extends SyncView<SyncNode>>(view: R, className?: string, parent?: string): R {
+	addView<R extends SyncView<SyncNode>>(view: R, className?: string, parent?: HTMLElement | SyncView<SyncNode>): R {
 		view.init();
-		if(className) view.el.className += ' ' + className;
-		this.el.appendChild(view.el);
+		if(className) view.el.className = (view.el.className + ' ' + className).trim();
+		let container = this.el;
+		if(parent) {
+			container = (parent as SyncView<SyncNode>).el || parent;
+		}
+		container.appendChild(view.el);
 		return view;
 	}
 	addBinding(memberName: string, prop: string, value: string) {

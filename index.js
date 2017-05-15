@@ -193,8 +193,12 @@ var __extends = (this && this.__extends) || (function () {
         SyncView.prototype.addView = function (view, className, parent) {
             view.init();
             if (className)
-                view.el.className += ' ' + className;
-            this.el.appendChild(view.el);
+                view.el.className = (view.el.className + ' ' + className).trim();
+            var container = this.el;
+            if (parent) {
+                container = parent.el || parent;
+            }
+            container.appendChild(view.el);
             return view;
         };
         SyncView.prototype.addBinding = function (memberName, prop, value) {
