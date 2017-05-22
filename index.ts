@@ -491,6 +491,7 @@ export class SyncList extends SyncView<SyncNode> {
 				this.emit('addingViewOptions', options);
 				//view = this.svml.buildComponent(this.options.ctor || this.options.tag, options, toInit);
 				view = new this.options.item(options);
+				view.init();
 				//toInit.forEach((v) => { v.init(); });
 				this.views[item.key] = view;
 				this.emit('viewAdded', view);

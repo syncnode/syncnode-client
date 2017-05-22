@@ -481,6 +481,7 @@ var __extends = (this && this.__extends) || (function () {
                     _this.emit('addingViewOptions', options);
                     //view = this.svml.buildComponent(this.options.ctor || this.options.tag, options, toInit);
                     view = new _this.options.item(options);
+                    view.init();
                     //toInit.forEach((v) => { v.init(); });
                     _this.views[item.key] = view;
                     _this.emit('viewAdded', view);
