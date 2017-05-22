@@ -497,7 +497,7 @@ export class SyncList extends SyncView<SyncNode> {
 				this.emit('viewAdded', view);
 			}
 			// Attempt to preserve order:
-			this.el.insertBefore(view.el, previous ? previous.el.nextSibling : this.el.firstChild);
+			//this.el.insertBefore(view.el, previous ? previous.el.nextSibling : this.el.firstChild);
 			view.onAny((eventName: string, ...args: any[]) => {
 				args.unshift(view);
 				args.unshift(eventName);
