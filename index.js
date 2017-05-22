@@ -38,6 +38,8 @@ var __extends = (this && this.__extends) || (function () {
         __extends(SyncNodeClient, _super);
         function SyncNodeClient() {
             var _this = _super.call(this) || this;
+            _this.isSocketOpen = false;
+            _this.queuedMessages = [];
             if (!('WebSocket' in window)) {
                 throw new Error('SyncNode only works with browsers that support WebSockets');
             }
@@ -49,11 +51,21 @@ var __extends = (this && this.__extends) || (function () {
             //});
         }
         SyncNodeClient.prototype.socketOnOpen = function (msg) {
+            this.isSocketOpen = true;
             console.log('connected!');
+            this.sendQueuedMessages();
             this.emit('open');
+        };
+        SyncNodeClient.prototype.sendQueuedMessages = function () {
+            while (this.queuedMessages.length) {
+                var msg = this.queuedMessages.shift();
+                if (msg)
+                    this.send(msg);
+            }
         };
         SyncNodeClient.prototype.socketOnClosed = function (msg) {
             var _this = this;
+            this.isSocketOpen = false;
             console.log('Socket connection closed: ', msg);
             this.emit('closed');
             setTimeout(function () {
@@ -78,7 +90,12 @@ var __extends = (this && this.__extends) || (function () {
             this.emit('error', msg);
         };
         SyncNodeClient.prototype.send = function (msg) {
-            this.socket.send(msg);
+            if (this.isSocketOpen) {
+                this.socket.send(msg);
+            }
+            else {
+                this.queuedMessages.push(msg);
+            }
         };
         SyncNodeClient.prototype.tryConnect = function () {
             console.log('connecting...');
@@ -481,7 +498,6 @@ var __extends = (this && this.__extends) || (function () {
                     _this.emit('addingViewOptions', options);
                     //view = this.svml.buildComponent(this.options.ctor || this.options.tag, options, toInit);
                     view = new _this.options.item(options);
-                    view.init();
                     //toInit.forEach((v) => { v.init(); });
                     _this.views[item.key] = view;
                     _this.emit('viewAdded', view);

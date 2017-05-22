@@ -13,8 +13,11 @@ export declare class SyncNodeClient extends SyncNodeEventEmitter {
     channels: {
         [key: string]: SyncNodeChannel<SyncNode>;
     };
+    isSocketOpen: boolean;
+    queuedMessages: string[];
     constructor();
     socketOnOpen(msg: any): void;
+    sendQueuedMessages(): void;
     socketOnClosed(msg: any): void;
     socketOnMessage(msg: MessageEvent): void;
     socketOnError(msg: any): void;

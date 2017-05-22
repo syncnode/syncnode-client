@@ -20,10 +20,11 @@ export class SyncNodeClient extends SyncNodeEventEmitter {
     socketUrl: string;
     socket: WebSocket;
     channels: { [key: string]: SyncNodeChannel<SyncNode> };
+	isSocketOpen: boolean = false;
+	queuedMessages: string[] = [];
 
     constructor() {
         super();
-
         if (!('WebSocket' in window)) {
             throw new Error('SyncNode only works with browsers that support WebSockets');
         }
@@ -36,11 +37,21 @@ export class SyncNodeClient extends SyncNodeEventEmitter {
     }
 
     socketOnOpen(msg: any) {
+		this.isSocketOpen = true;	
         console.log('connected!');
+		this.sendQueuedMessages();
         this.emit('open');
     }
 
+	sendQueuedMessages() {
+		while(this.queuedMessages.length) {
+			let msg = this.queuedMessages.shift();
+			if(msg) this.send(msg);
+		}
+	}
+
     socketOnClosed(msg: any) {
+		this.isSocketOpen = false;	
         console.log('Socket connection closed: ', msg);
         this.emit('closed');
         setTimeout(() => {
@@ -67,7 +78,11 @@ export class SyncNodeClient extends SyncNodeEventEmitter {
     }
 
     send(msg: string) {
-        this.socket.send(msg);
+		if(this.isSocketOpen) {
+	        this.socket.send(msg);
+		} else {
+			this.queuedMessages.push(msg);
+		}
     }
 
     tryConnect() {
