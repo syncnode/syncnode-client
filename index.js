@@ -486,8 +486,13 @@ var __extends = (this && this.__extends) || (function () {
                     _this.views[item.key] = view;
                     _this.emit('viewAdded', view);
                 }
-                // Attempt to preserve order:
-                _this.el.insertBefore(view.el, previous ? previous.el.nextSibling : _this.el.firstChild);
+                // Add view to container if necessarry, and attempt to preserve order:
+                if (previous && previous.el.nextSibling != view.el) {
+                    _this.el.insertBefore(view.el, previous.el.nextSibling);
+                }
+                else if (view.el.parentElement != _this.el) {
+                    _this.el.insertBefore(view.el, _this.el.firstChild);
+                }
                 view.onAny(function (eventName) {
                     var args = [];
                     for (var _i = 1; _i < arguments.length; _i++) {
